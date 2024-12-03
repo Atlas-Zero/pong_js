@@ -5,34 +5,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PONG!</title>
+
     <style>
         #myCanvas {
-            border: 1px, #888 solid;
+            background-color: ;
+            border: 2px, #888 solid;
         }
         body {
-            background-color: #b1f2ff;
+            background-color: #355070;
         }
         h1 {
-            size: 40px;
+            font-size: 40px;
+        }
+        h2 {
+            font-size: 20px;
         }
         p {
-            size: 12px;
+            font-size: 20px;
         }
     </style>
 </head>
 
 <body onload="start()">
     <div>
-        <p style="text-align: left;">Player 1</p>
+        <h2 style="text-align: left;">Player 1</h2>
         <p id="score1" style="text-align: left;"> ------ </p>
         <p id="lives1" style="text-align: left;"> ------ </p>
-        <p style="text-align: right;">Player 2</p>
+        <h2 style="text-align: right;">Player 2</h2>
         <p id="score2" style="text-align: right;"> ------ </p>
         <p id="lives2" style="text-align: right;"> ------ </p>
     </div>
 
     <div style="text-align: center;">
-        <h1>PONG!</h1>
+        <h1><b>PONG!<b></h1>
         <canvas id="myCanvas" width="800" height="800"></canvas>
         <p id="msg"></p>
     </div>
@@ -42,6 +47,7 @@
 <script>
 
     const canvas = document.getElementById("myCanvas")
+    // const woop = new Audio('woop.wav')
 
     var player1 = {
         lives: 10,
@@ -54,12 +60,12 @@
     }
 
     var obj = { // our object with different properties
-        x: 0,
-        y: 0,
+        x: 400,
+        y: 400,
         w: 10,
         h: 10,
-        deltaX: 3,
-        deltaY: 2
+        deltaX: 1.5,
+        deltaY: 1,
     }
 
     var env = {
@@ -73,14 +79,14 @@
         x: 40,
         y: 100,
         w: canvas.width * 0.02,
-        h: canvas.height * 0.2
+        h: canvas.height * 0.2,
     }
 
     var paddle2 = {
         x: 745,
         y: 550,
         w: canvas.width * 0.02,
-        h: canvas.height * 0.2
+        h: canvas.height * 0.2,
     }
 
     function gameLogic() {
@@ -88,7 +94,7 @@
         obj.x += obj.deltaX;
         obj.y += obj.deltaY;
 
-        // y-bounce
+        // bounce off top/bottom
         if (obj.y > env.c.height - 10 || obj.y < 0)
             obj.deltaY = -obj.deltaY;
 
@@ -96,25 +102,31 @@
         let coll = intersect(obj, paddle) 
         let coll2 = intersect(obj, paddle2)
         if (coll || coll2) {
-            obj.deltaX = -obj.deltaX
+            // woop.play();
+            obj.deltaX = -obj.deltaX * 1.25;
+            obj.deltaY = obj.deltaY * 1.25;
         }
 
-        // Score PLAYER 1
+        // score PLAYER 1
         if (obj.x > env.c.width + 20) {
             player1.score += 1;
             player2.lives -= 1;
             document.getElementById("score1").innerHTML = "Score = " + player1.score;
             document.getElementById("lives2").innerHTML = "Lives = " + player2.lives;
+            obj.deltaX = 1.5;
+            obj.deltaY = 1;
             obj.x = 250;
             obj.y = 250;
         }
 
-        // Score PLAYER 2
+        // score PLAYER 2
         if (obj.x < -20) {
             player2.score += 1;
             player1.lives -= 1;
             document.getElementById("score2").innerHTML = "Score = " + player2.score;
             document.getElementById("lives1").innerHTML = "Lives = " + player1.lives;
+            obj.deltaX = 1.5;
+            obj.deltaY = 1;
             obj.x = 250;
             obj.y = 250;
         }
@@ -165,18 +177,29 @@
     function gameover() {
         obj.deltaX = 0;
         obj.deltaY = 0;
-        obj.x = 400 - (obj.w / 2);
-        obj.y = 400 - (obj.h / 2);
+        obj.x = 400 - 10; //middle - radius
+        obj.y = 400 - 10;
     }
 
+    function intersect(R1, R2) {
+        if (R1.x + R1.w < R2.x)
+            return false; // R1 entirely left of R2
+        if (R1.y + R1.h < R2.y)
+            return false; // R1 above R2
+        if (R2.x + R2.w < R1.x)
+            return false; // R2 entirely left of R1
+        if (R2.y + R2.h < R1.y)
+            return false; // R2 above R1
+        return true;
+    }
+    
     function draw() {
-
         // var c = document.getElementById("myCanvas");
         env.c.width = env.c.width; // delete everything
         drawGrid();
         drawPaddle();
         drawPaddle2();
-        drawObj(obj.x, obj.y);
+        drawObj();
     }
 
     function drawPaddle() {
@@ -188,6 +211,7 @@
         env.ctx.fillStyle = "darkgreen";
         env.ctx.fillRect(paddle2.x, paddle2.y, paddle2.w, paddle2.h);
     }
+
     function drawGrid() {
         env.ctx.fillStyle = "#ccc";
         env.ctx.lineWidth = 0.1;
@@ -203,21 +227,9 @@
         env.ctx.stroke();
     }
 
-    function drawObj(x, y) {
+    function drawObj() {
         env.ctx.fillStyle = "red";
         env.ctx.fillRect(obj.x, obj.y, obj.w, obj.h);
-    }
-
-    function intersect(R1, R2) {
-        if (R1.x + R1.w < R2.x)
-            return false; // R1 entirely left of R2
-        if (R1.y + R1.h < R2.y)
-            return false; // R1 above R2
-        if (R2.x + R2.w < R1.x)
-            return false; // R2 entirely left of R1
-        if (R2.y + R2.h < R1.y)
-            return false; // R2 above R1
-        return true;
     }
 
 </script>
