@@ -8,8 +8,7 @@
 
     <style>
         #myCanvas {
-            background-color: ;
-            border: 2px, #888 solid;
+            border: 3px, #888 solid;
         }
         body {
             background-color: #355070;
@@ -39,7 +38,7 @@
     <div style="text-align: center;">
         <h1><b>PONG!<b></h1>
         <canvas id="myCanvas" width="800" height="800"></canvas>
-        <p id="msg"></p>
+        <p id="win"></p>
     </div>
 </body>
 
@@ -59,8 +58,8 @@
         score: 0, 
     }
 
-    var obj = { // our object with different properties
-        x: 400,
+    var obj = { // cube
+        x: 400, // start pos
         y: 400,
         w: 10,
         h: 10,
@@ -75,7 +74,7 @@
         ctx: null, // 2d-context 
     }
 
-    var paddle = {
+    var paddle1 = {
         x: 40,
         y: 100,
         w: canvas.width * 0.02,
@@ -99,46 +98,60 @@
             obj.deltaY = -obj.deltaY;
 
         // collision
-        let coll = intersect(obj, paddle) 
+        let coll = intersect(obj, paddle1) 
         let coll2 = intersect(obj, paddle2)
+
         if (coll || coll2) {
             // woop.play();
             obj.deltaX = -obj.deltaX * 1.25;
             obj.deltaY = obj.deltaY * 1.25;
         }
 
-        // score PLAYER 1
+        // point for PLAYER 1
         if (obj.x > env.c.width + 20) {
             player1.score += 1;
             player2.lives -= 1;
+            obj.deltaX = -Math.random() - 1;
+            obj.deltaY = -Math.random() - 1;
+            obj.x = 400 - 10; // middle - width
+            obj.y = 400 - 10; // middle - height
             document.getElementById("score1").innerHTML = "Score = " + player1.score;
             document.getElementById("lives2").innerHTML = "Lives = " + player2.lives;
-            obj.deltaX = 1.5;
-            obj.deltaY = 1;
-            obj.x = 250;
-            obj.y = 250;
         }
 
-        // score PLAYER 2
+        // point for PLAYER 2
         if (obj.x < -20) {
             player2.score += 1;
             player1.lives -= 1;
+            obj.deltaX = Math.random() + 1;
+            obj.deltaY = Math.random() + 1;
+            obj.x = 400 - 10; // middle - width
+            obj.y = 400 - 10; // middle - height
             document.getElementById("score2").innerHTML = "Score = " + player2.score;
             document.getElementById("lives1").innerHTML = "Lives = " + player1.lives;
-            obj.deltaX = 1.5;
-            obj.deltaY = 1;
-            obj.x = 250;
-            obj.y = 250;
         }
 
-        // Gameover
+        // limits 
+        if (paddle1.y >= 640) {
+            paddle1.y = 640;
+        }
+        if (paddle1.y <= 0) {
+            paddle1.y = 0;
+        }
+        if (paddle2.y >= 640) {
+            paddle2.y = 640;
+        }
+        if (paddle2.y <= 0) {
+            paddle2.y = 0;
+        }
+        // gameover state
         if (player1.score == 10) {
             gameover();
-            document.getElementById("msg").innerHTML = "Game Over. Player 1 Wins.";
+            document.getElementById("win").innerHTML = "Game Over. Player 1 Wins.";
         }
         else if (player2.score == 10) {
             gameover();
-            document.getElementById("msg").innerHTML = "Game Over. Player 2 Wins.";
+            document.getElementById("win").innerHTML = "Game Over. Player 2 Wins.";
         }
     }
 
@@ -161,24 +174,24 @@
     function f_keypress1(e) {
         console.log("key=" + e.code);
         if (e.code == "KeyW")
-            paddle.y -= 20;
+            paddle1.y -= 40;
         if (e.code == "KeyS")
-            paddle.y += 20;
+            paddle1.y += 40;
     }
 
     function f_keypress2(e) {
         console.log("key=" + e.code);
         if (e.code == "KeyO")
-            paddle2.y -= 20;
+            paddle2.y -= 40;
         if (e.code == "KeyL")
-            paddle2.y += 20;
+            paddle2.y += 40;
     }
 
     function gameover() {
         obj.deltaX = 0;
         obj.deltaY = 0;
-        obj.x = 400 - 10; //middle - radius
-        obj.y = 400 - 10;
+        obj.x = 400 - 10; // middle - width
+        obj.y = 400 - 10; // middle - height
     }
 
     function intersect(R1, R2) {
@@ -197,14 +210,14 @@
         // var c = document.getElementById("myCanvas");
         env.c.width = env.c.width; // delete everything
         drawGrid();
-        drawPaddle();
+        drawPaddle1();
         drawPaddle2();
         drawObj();
     }
 
-    function drawPaddle() {
+    function drawPaddle1() {
         env.ctx.fillStyle = "darkred";
-        env.ctx.fillRect(paddle.x, paddle.y, paddle.w, paddle.h);
+        env.ctx.fillRect(paddle1.x, paddle1.y, paddle1.w, paddle1.h);
     }
 
     function drawPaddle2() {
@@ -228,7 +241,7 @@
     }
 
     function drawObj() {
-        env.ctx.fillStyle = "red";
+        env.ctx.fillStyle = "ghostwhite";
         env.ctx.fillRect(obj.x, obj.y, obj.w, obj.h);
     }
 
