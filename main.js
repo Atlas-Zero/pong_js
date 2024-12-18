@@ -1,3 +1,6 @@
+canvas = document.getElementById("myCanvas")
+ctx = canvas.getContext("2d"); // toolbox (context = toolbox)
+
 var player1 = {
     lives: 10,
     score: 0,
@@ -13,27 +16,25 @@ var obj = { // cube
     y: 400,
     w: 10,
     h: 10,
-    deltaX: 1.5,
-    deltaY: 1,
+    deltaX: 2,
+    deltaY: 1.5,
 }
 
 var env = {
     rows: 20,
     columns: 20,
-    c: null, // our canvas
-    ctx: null, // 2d-context 
 }
 
 var paddle1 = {
     x: 40,
-    y: 100,
+    y: 80,
     w: canvas.width * 0.02,
     h: canvas.height * 0.2,
 }
 
 var paddle2 = {
     x: 745,
-    y: 550,
+    y: canvas.height - 240,
     w: canvas.width * 0.02,
     h: canvas.height * 0.2,
 }
@@ -106,15 +107,13 @@ function gameLogic() {
 }
 
 function cyclic() {
-    gameLogic();
     draw();     // draw everything, no matter how tiny the change to the picture   
+    gameLogic();
 }
 
 function start() {
     // const woop = new Audio('woop.wav')
-    canvas = document.getElementById("myCanvas")
     canvas.setAttribute('tabindex', '0');
-    ctx = canvas.getContext("2d"); // toolbox (context = toolbox)
     canvas.focus(); // divert keyboard to the canvas
     // canvas.addEventListener('mousedown', f_mousedown, false);
     canvas.addEventListener('keypress', f_keypress1, false);
@@ -145,20 +144,19 @@ function gameover() {
     obj.y = 400 - 10; // middle - height
 }
 
-function intersect(R1, R2) {
-    if (R1.x + R1.w < R2.x)
-        return false; // R1 entirely left of R2
-    if (R1.y + R1.h < R2.y)
-        return false; // R1 above R2
-    if (R2.x + R2.w < R1.x)
-        return false; // R2 entirely left of R1
-    if (R2.y + R2.h < R1.y)
-        return false; // R2 above R1
+function intersect(o, p) {
+    if (o.x + o.w < p.x)
+        return false; // o entirely left of p
+    if (o.y + o.h < p.y)
+        return false; // o above p
+    if (p.x + p.w < o.x)
+        return false; // p entirely left of o
+    if (p.y + p.h < o.y)
+        return false; // p above o
     return true;
 }
 
 function draw() {
-    // var c = document.getElementById("myCanvas");
     canvas.width = canvas.width; // delete everything
     drawGrid();
     drawPaddle1();
@@ -180,13 +178,13 @@ function drawGrid() {
     ctx.fillStyle = "#ccc";
     ctx.lineWidth = 0.1;
 
-    for (var i = 0; i <= env.rows; i++) {
+    for (let i = 0; i <= env.rows; i++) {
         ctx.moveTo(0, i * (canvas.height / env.rows));
         ctx.lineTo(canvas.width, i * (canvas.height / env.rows));
     }
-    for (var i = 0; i <= canvasolumns; i++) {
-        ctx.moveTo(i * (canvas.width / canvasolumns), 0);
-        ctx.lineTo(i * (canvas.width / canvasolumns), canvas.height);
+    for (let i = 0; i <= env.columns; i++) {
+        ctx.moveTo(i * (canvas.width / env.columns), 0);
+        ctx.lineTo(i * (canvas.width / env.columns), canvas.height);
     }
     ctx.stroke();
 }
