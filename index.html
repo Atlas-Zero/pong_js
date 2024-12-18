@@ -19,6 +19,9 @@
         p {
             font-size: 20px;
         }
+        span {
+            margin: auto;
+        }
     </style>
 </head>
 
@@ -26,10 +29,14 @@
     <div>
         <p>
             <span style="float: left;">Player 1</span>
+            <span style="float: right;">Player 2</span>  
+        </p>
+        <p>
             <span id="score1" style="float: left;"> ------ </span>
+            <span id="score2" style="float: right;"> ------ </span>            
+        </p>
+        <p>
             <span id="lives1" style="float: left;"> ------ </span>
-            <span style="float: right;">Player 2</span>            
-            <span id="score2" style="float: right;"> ------ </span>
             <span id="lives2" style="float: right;"> ------ </span>        
         </p>
     </div>
@@ -39,5 +46,4 @@
         <p id="win"></p>
     </div>
 </body>
-
 </html>

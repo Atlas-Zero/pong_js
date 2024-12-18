@@ -1,6 +1,3 @@
-const canvas = document.getElementById("myCanvas")
-// const woop = new Audio('woop.wav')
-
 var player1 = {
     lives: 10,
     score: 0,
@@ -47,7 +44,7 @@ function gameLogic() {
     obj.y += obj.deltaY;
 
     // bounce off top/bottom
-    if (obj.y > env.c.height - 10 || obj.y < 0)
+    if (obj.y > canvas.height - 10 || obj.y < 0)
         obj.deltaY = -obj.deltaY;
 
     // collision
@@ -61,7 +58,7 @@ function gameLogic() {
     }
 
     // point for PLAYER 1
-    if (obj.x > env.c.width + 20) {
+    if (obj.x > canvas.width + 20) {
         player1.score += 1;
         player2.lives -= 1;
         obj.deltaX = -Math.random() - 1;
@@ -114,13 +111,14 @@ function cyclic() {
 }
 
 function start() {
-    env.c = document.getElementById("myCanvas"); // get canvas element and store reference globally
-    env.c.setAttribute('tabindex', '0');
-    env.c.focus(); // divert keyboard to the canvas
+    // const woop = new Audio('woop.wav')
+    canvas = document.getElementById("myCanvas")
+    canvas.setAttribute('tabindex', '0');
+    ctx = canvas.getContext("2d"); // toolbox (context = toolbox)
+    canvas.focus(); // divert keyboard to the canvas
     // canvas.addEventListener('mousedown', f_mousedown, false);
-    env.c.addEventListener('keypress', f_keypress1, false);
-    env.c.addEventListener('keypress', f_keypress2, false);
-    env.ctx = env.c.getContext("2d"); // same thing for the toolbox (context = toolbox)
+    canvas.addEventListener('keypress', f_keypress1, false);
+    canvas.addEventListener('keypress', f_keypress2, false);
     setInterval(cyclic, 15); // do game Logic periodically
 }
 
@@ -161,7 +159,7 @@ function intersect(R1, R2) {
 
 function draw() {
     // var c = document.getElementById("myCanvas");
-    env.c.width = env.c.width; // delete everything
+    canvas.width = canvas.width; // delete everything
     drawGrid();
     drawPaddle1();
     drawPaddle2();
@@ -169,31 +167,31 @@ function draw() {
 }
 
 function drawPaddle1() {
-    env.ctx.fillStyle = "darkred";
-    env.ctx.fillRect(paddle1.x, paddle1.y, paddle1.w, paddle1.h);
+    ctx.fillStyle = "darkred";
+    ctx.fillRect(paddle1.x, paddle1.y, paddle1.w, paddle1.h);
 }
 
 function drawPaddle2() {
-    env.ctx.fillStyle = "darkgreen";
-    env.ctx.fillRect(paddle2.x, paddle2.y, paddle2.w, paddle2.h);
+    ctx.fillStyle = "darkgreen";
+    ctx.fillRect(paddle2.x, paddle2.y, paddle2.w, paddle2.h);
 }
 
 function drawGrid() {
-    env.ctx.fillStyle = "#ccc";
-    env.ctx.lineWidth = 0.1;
+    ctx.fillStyle = "#ccc";
+    ctx.lineWidth = 0.1;
 
     for (var i = 0; i <= env.rows; i++) {
-        env.ctx.moveTo(0, i * (env.c.height / env.rows));
-        env.ctx.lineTo(env.c.width, i * (env.c.height / env.rows));
+        ctx.moveTo(0, i * (canvas.height / env.rows));
+        ctx.lineTo(canvas.width, i * (canvas.height / env.rows));
     }
-    for (var i = 0; i <= env.columns; i++) {
-        env.ctx.moveTo(i * (env.c.width / env.columns), 0);
-        env.ctx.lineTo(i * (env.c.width / env.columns), env.c.height);
+    for (var i = 0; i <= canvasolumns; i++) {
+        ctx.moveTo(i * (canvas.width / canvasolumns), 0);
+        ctx.lineTo(i * (canvas.width / canvasolumns), canvas.height);
     }
-    env.ctx.stroke();
+    ctx.stroke();
 }
 
 function drawObj() {
-    env.ctx.fillStyle = "ghostwhite";
-    env.ctx.fillRect(obj.x, obj.y, obj.w, obj.h);
+    ctx.fillStyle = "ghostwhite";
+    ctx.fillRect(obj.x, obj.y, obj.w, obj.h);
 }
