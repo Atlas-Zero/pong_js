@@ -1,5 +1,5 @@
 canvas = document.getElementById("myCanvas")
-ctx = canvas.getContext("2d"); // toolbox (context = toolbox)
+ctx = canvas.getContext("2d") // toolbox (context = toolbox)
 
 var player1 = {
     lives: 10,
