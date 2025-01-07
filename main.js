@@ -46,7 +46,7 @@ function gameLogic() {
     obj.y += obj.deltaY;
 
     // bounce off top/bottom
-    if (obj.y > canvas.height - 10 || obj.y < 0)
+    if (obj.y > canvas.height - 5 || obj.y < 0)
         obj.deltaY = -obj.deltaY;
 
     // collision
@@ -54,9 +54,9 @@ function gameLogic() {
     let coll2 = intersect(obj, paddle2)
 
     if (coll || coll2) {
+        woop.play();
         obj.deltaX = -obj.deltaX * 1.25;
         obj.deltaY = obj.deltaY * 1.25;
-        woop.play();
     }
 
     // point for PLAYER 1
@@ -65,8 +65,8 @@ function gameLogic() {
         player2.lives -= 1;
         obj.deltaX = -Math.random() - 1;
         obj.deltaY = -Math.random() - 1;
-        obj.x = 400 - 10; // middle - width
-        obj.y = 400 - 10; // middle - height
+        obj.x = 400 - 5; // middle - width
+        obj.y = 400 - 5; // middle - height
         document.getElementById("score1").innerHTML = "Score = " + player1.score;
         document.getElementById("lives2").innerHTML = "Lives = " + player2.lives;
     }
@@ -77,8 +77,8 @@ function gameLogic() {
         player1.lives -= 1;
         obj.deltaX = Math.random() + 1;
         obj.deltaY = Math.random() + 1;
-        obj.x = 400 - 10; // middle - width
-        obj.y = 400 - 10; // middle - height
+        obj.x = 400 - 5; // middle - width
+        obj.y = 400 - 5; // middle - height
         document.getElementById("score2").innerHTML = "Score = " + player2.score;
         document.getElementById("lives1").innerHTML = "Lives = " + player1.lives;
     }
@@ -140,8 +140,8 @@ function f_keypress2(e) {
 function gameover() {
     obj.deltaX = 0;
     obj.deltaY = 0;
-    obj.x = 400 - 10; // middle - width
-    obj.y = 400 - 10; // middle - height
+    obj.x = 400 - 5; // middle - width
+    obj.y = 400 - 5; // middle - height
 }
 
 function intersect(o, p) {
