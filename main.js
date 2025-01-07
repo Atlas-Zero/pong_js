@@ -1,3 +1,4 @@
+const woop = new Audio('woop.wav');
 canvas = document.getElementById("myCanvas")
 ctx = canvas.getContext("2d") // toolbox (context = toolbox)
 
@@ -53,9 +54,9 @@ function gameLogic() {
     let coll2 = intersect(obj, paddle2)
 
     if (coll || coll2) {
-        // woop.play();
         obj.deltaX = -obj.deltaX * 1.25;
         obj.deltaY = obj.deltaY * 1.25;
+        woop.play();
     }
 
     // point for PLAYER 1
@@ -112,7 +113,6 @@ function cyclic() {
 }
 
 function start() {
-    // const woop = new Audio('woop.wav')
     canvas.setAttribute('tabindex', '0');
     canvas.focus(); // divert keyboard to the canvas
     // canvas.addEventListener('mousedown', f_mousedown, false);
@@ -190,6 +190,11 @@ function drawGrid() {
 }
 
 function drawObj() {
+    ctx.beginPath();
+    ctx.arc(obj.x, obj.y, 5, 0, 2 * Math.PI, false);
     ctx.fillStyle = "ghostwhite";
-    ctx.fillRect(obj.x, obj.y, obj.w, obj.h);
+    ctx.fill();
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    // ctx.fillRect(obj.x, obj.y, obj.w, obj.h);
 }
